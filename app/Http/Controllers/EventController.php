@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EventFormRequest;
 use Illuminate\Http\Request;
 use App\Models\Event;
 class EventController extends Controller
@@ -13,7 +14,6 @@ class EventController extends Controller
      */
     public function index()
     {
-        //en utilisant eloquent
         $events = Event::all();
         return view('events.index', compact('events'));
     }
@@ -34,17 +34,9 @@ class EventController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(EventFormRequest $request)
     {
-        //dd('store');
-
-        //on passe la requete puis les regles de validation
-        $this->validate($request, [
-            'title' => 'required|min:3',
-            'description' => 'required|min:5'
-        ]);
         Event::create(['title' => $request->title, 'description' => $request->description]);
-        //return redirect(route('home'));
         return redirect('/');
     }
 
@@ -56,7 +48,6 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        //dd('show');
         $event = Event::findOrFail($id);
         return view('events.show', compact('event'));
     }
@@ -69,7 +60,6 @@ class EventController extends Controller
      */
     public function edit($id)
     {
-        //dd('edit');
         $event = Event::findOrFail($id);
         return view('events.edit', compact('event'));
     }
@@ -81,13 +71,8 @@ class EventController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(EventFormRequest $request, $id)
     {
-
-        $this->validate($request, [
-            'title' => 'required|min:3',
-            'description' => 'required|min:5'
-        ]);
         $event = Event::findOrFail($id);
         $event->update(['title' => $request->title, 'description' => $request->description]);
         return redirect(route('events.show', $event));
@@ -101,7 +86,6 @@ class EventController extends Controller
      */
     public function destroy($id)
     {
-        //dd('destroy);
         Event::destroy($id);
         return redirect()->route('home');
     }
